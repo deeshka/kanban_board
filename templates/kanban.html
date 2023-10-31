@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--Defining the app name, adding css templates-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dee's Kanban Board</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <style>
+        /* adding personalized css style*/
+        /* choosing all elements to set up the box sizing*/  
+        * {
+        box-sizing: border-box;
+        }
+
+        /* Create three equal columns that floats next to each other */
+        .column {
+        float: left;
+        width: 33%;
+        padding: 10px;
+        overflow: auto; /* expanding the column as we add more items */
+        border-radius: 3%;
+        margin: 1px;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+        content: "";
+        display: table;
+        clear: both;
+        }
+    </style>
+</head>
+
+
+<!--THE MAIN WEB APP BODY-->
+<body>
+    <div style="margin-top: 50px;" class="ui container">
+        <h1 class="ui center aligned header">Kanban Board</h1>
+
+        <!--Creating the form that allows users submit their tasks-->
+        <form class="ui form" action="/add" method="post">
+            <div class="field">
+                <label>Task Title</label>
+                <input type="text" name="title" placeholder="Enter Todo Task..."><br>
+            </div>
+            <button class="ui blue button" type="submit">Add</button>
+        </form>
+
+        <hr>
+
+        <!--Setting up the space where to post the tasks-->
+        <div class = 'row:after'>
+
+            <!--column 1 that contains Todo tasks/not started tasks-->
+            <div class = "column" style = "background-color: #c1d5e0;">
+                <h2> ToDo tasks</h2>
+                <!--Iterating though each task to display the task attributes, its status along with update, delete buttons-->
+                {% for task in task_list %}
+
+                <!--The tasks are chosen from the task_list that contains all tasks-->
+                <!--The column displays tasks only if their status is equal to not started-->
+                {% if task.complete == False and task.inprogress == False and task.notstarted == True   %}
+                 <div class="ui segment">
+                    <p class="ui big header">{{task.id }} | {{ task.title }}</p>
+                    <span class="ui label" style="background-color: RGBA(193, 213, 224, 0.5);">Not Started</span>
+    
+                    <a class="ui blue button" href="/update/{{ task.id }}">Update Status</a>
+                    <a class="ui button" style="background-color:#FF7581" href="/delete/{{ task.id }}">Delete</a>
+                </div>
+                {% endif %}
+
+                {% endfor %}
+            </div>
+            
+            <!--column 2 that contains Inproogress tasks/not started tasks-->
+            <div class = column style="background-color: RGBA(255, 168, 182, 0.5);">
+                <h2> In Progress tasks</h2>
+
+                <!--Iterating though each task to display the task attributes, its status along with update, delete buttons-->
+                {% for task in inprogress_list %}
+                <div class="ui segment">
+                    <p class="ui big header">{{task.id }} | {{ task.title }}</p>
+
+                    <!--The tasks are chosen from the inprogress_list that contains tasks that are only in progress-->
+                    {% if task.complete == False and task.inprogress == True and task.notstarted == False   %}
+                    <span class="ui label" style="background-color: RGBA(255, 168, 182, 0.5);">In Progress</span>
+                    {% endif %}
+
+                    <a class="ui blue button" href="/update/{{ task.id }}">Update Status</a>
+                    <a class="ui button" style="background-color:#FF7581" href="/delete/{{ task.id }}">Delete</a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!--column 3 that contains Completed tasks/not started tasks-->
+            <div class = column style="background-color:rgba(175, 168, 255, 0.5);">
+                <h2>Completed tasks</h2>
+
+                <!--Iterating though each task to display the task attributes, its status along with update, delete buttons-->
+                <!--The tasks are chosen from the completed_list that contains tasks that are completed only-->
+                {% for task in complete_list %}
+                <div class="ui segment">
+                    <p class="ui big header">{{task.id }} | {{ task.title }}</p>
+                    {% if task.complete == True and task.inprogress == False and task.notstarted == False%}
+                    <span class="ui label" style="background-color:rgba(175, 168, 255, 0.5);">Completed</span>
+                    {% endif %}
+
+                    <a class="ui blue button" href="/update/{{ task.id }}">Update Status</a>
+                    <a class="ui button" style="background-color:#FF7581"href="/delete/{{ task.id }}">Delete</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
